@@ -114,7 +114,40 @@ namespace RandomSequence
         }
 
 
-        public static string MakeBigStringFromListSB(List<int> input,
+        public static string MakeBigStringFromIntListSB(List<int> input,
+                int itemsPerLine)
+        {
+            string newLin = Environment.NewLine;
+            var intsPerLine = input.Select((i, index) => (Integer: i, Index: index))
+                .GroupBy(x => x.Index / itemsPerLine, x => x.Integer.ToString())
+                .Select(g => string.Join(", ", g) + ",");
+            string result = $"[{string.Join(newLin, intsPerLine).TrimEnd(',')}]" + newLin;
+            return result;
+        }
+
+
+        public static List<string> ConvertList(List<int> toConvertList, string catchall,
+            int rangeSize1, string label1, int rangeSize2, string label2,
+            int rangeSize3 = 0, string label3 = "Z3", int rangesize4 = 0, string label4 = "Z4", int rangesize5 = 0, string label5 = "Z5")
+        {
+            List<string> ret = new List<string>();
+            for (int i = 0; i < toConvertList.Count; i++)
+            {
+                int toConvert = toConvertList[i];
+                if (toConvert < rangeSize1) { ret.Add(label1); }
+                else if(toConvert < rangeSize1 + rangeSize2) { ret.Add(label2); }
+                else if (toConvert < rangeSize1 + rangeSize2 + rangeSize3) 
+                    { ret.Add(label3); }
+                else if (toConvert < rangeSize1 + rangeSize2 + rangeSize3 + rangesize4)
+                    { ret.Add(label4); }
+                else if (toConvert < rangeSize1 + rangeSize2 + rangeSize3 + rangesize4 + rangesize5)
+                    { ret.Add(label5); }
+                else { ret.Add(catchall); }
+            }
+            return ret;
+        }
+
+        public static string MakeBigStringFromStringListSB(List<string> input,
                 int itemsPerLine)
         {
             string newLin = Environment.NewLine;
