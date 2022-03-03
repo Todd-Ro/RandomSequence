@@ -128,7 +128,8 @@ namespace RandomSequence
 
         public static List<string> ConvertList(List<int> toConvertList, string catchall,
             int rangeSize1, string label1, int rangeSize2, string label2,
-            int rangeSize3 = 0, string label3 = "Z3", int rangesize4 = 0, string label4 = "Z4", int rangesize5 = 0, string label5 = "Z5")
+            int rangeSize3 = 0, string label3 = "Z3", int rangesize4 = 0, string label4 = "Z4", int rangesize5 = 0, string label5 = "Z5",
+            int rangeSize6 = 0, string label6 = "Z6")
         {
             List<string> ret = new List<string>();
             for (int i = 0; i < toConvertList.Count; i++)
@@ -142,6 +143,9 @@ namespace RandomSequence
                     { ret.Add(label4); }
                 else if (toConvert < rangeSize1 + rangeSize2 + rangeSize3 + rangesize4 + rangesize5)
                     { ret.Add(label5); }
+                else if (toConvert < rangeSize1 + rangeSize2 + rangeSize3 + rangesize4 
+                    + rangesize5 + rangeSize6)
+                    { ret.Add(label6); }
                 else { ret.Add(catchall); }
             }
             return ret;
@@ -156,6 +160,78 @@ namespace RandomSequence
                 .Select(g => string.Join(", ", g) + ",");
             string result = $"[{string.Join(newLin, intsPerLine).TrimEnd(',')}]" + newLin;
             return result;
+        }
+
+        public static int CountOccurrencesInTwoLists(string target, List<string> firstList, 
+            List<string> secondList)
+        {
+            int count = 0;
+            for(int i= 0; i < firstList.Count; i++)
+            {
+                if(firstList[i].Equals(target))
+                {
+                    count++;
+                }
+            }
+            for(int j=0; j<secondList.Count; j++)
+            {
+                if (firstList[j].Equals(target))
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        public static List<KeyValuePair<string, int>> GetHistogram(List<string> firstList, List<string> secondList=null)
+        {
+            List<string> foundValues = new List<string>();
+            foreach(string value in firstList)
+            {
+                if(!(foundValues.Contains(value)))
+                {
+                    foundValues.Add(value);
+                }
+            }
+            if(!(secondList is null))
+            {
+                foreach (string value in secondList)
+                {
+                    if (!(foundValues.Contains(value)))
+                    {
+                        foundValues.Add(value);
+                    }
+                }
+            }
+            int[] tallies = new int[foundValues.Count];
+            Array.Clear(tallies, 0, tallies.Length);
+            foreach (string value in firstList)
+            {
+                int index = foundValues.IndexOf(value);
+                tallies[index] += 1;
+            }
+            if (!(secondList is null))
+            {
+                foreach (string value in secondList)
+                {
+                    int index = foundValues.IndexOf(value);
+                    tallies[index] += 1;
+                }
+            }
+            List<KeyValuePair<string, int>> ret = new List<KeyValuePair<string, int>>();
+            for(int i=0; i<foundValues.Count; i++)
+            {
+                ret.Add(new KeyValuePair<string, int>(foundValues[i], tallies[i]));
+            }
+            return ret;
+        }
+
+        public static void PrintHistogram(List<KeyValuePair<string, int>> myHisto)
+        {
+            foreach(KeyValuePair<string, int> aPair in myHisto)
+            {
+                Console.WriteLine($"{aPair.Key}: {aPair.Value}");
+            }
         }
     }
 }
